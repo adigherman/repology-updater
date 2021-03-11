@@ -66,11 +66,14 @@ jobs:
       - name: Check with mypy
         run: make mypy
       - name: Fill database with test data
-        run: ./repology-update.py --initdb --parse --database --postupdate
+        run: |
+          ./repology-update.py --initdb --parse --database --postupdate
+          pg_dumpall > db.out
       - name: Smoke test
         run: |
           ./repology-dump.py --help
-      - name: Run unittests
-        run: coverage run --source=repology --omit="repology/test/*,repology/fetchers/*" -m unittest discover
-      - name: Push coverage info
-        run: codecov
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v2
+        with:
+          name: whole-db
+          path: db.out
