@@ -68,7 +68,7 @@ jobs:
       - name: Fill database with test data
         run: |
           ./repology-update.py --initdb --parse --database --postupdate
-          pg_dumpall > db.out
+          sudo -u postgres pg_dumpall > db.out
       - name: Smoke test
         run: |
           ./repology-dump.py --help
